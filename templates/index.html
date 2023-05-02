@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNVS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: white;
+        }
+        .title {
+            font-size: 50px;
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="flex items-center justify-center p-10">
+        <h1 class="title">CNVS</h1>
+    </header>
+
+    <div class="flex flex-col items-center">
+        <div class="flex w-96 mb-4" x-data="{ searchQuery: '' }">
+            <input type="text" name="search" id="search" placeholder="Filter by name"
+                class="w-full" 
+                x-model="searchQuery"
+                @keyup.enter="searchUsers(searchQuery)">
+
+        </div>
+        <div flex>
+            <table class="w-96 divide-y divide-gray-200 text-sm" x-data="$store.users">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th
+                      class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900"
+                    >
+                      Name
+                    </th>
+                  </tr>
+                </thead>
+                
+                <template x-for="u in list">
+                  <tbody class="divide-y divide-gray-200">
+                      <tr>
+                      <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                          <span x-text="u.name"></span>
+                      </td>
+                      </tr>
+                  </tbody>
+                  </template>
+              </table>
+              
+        </div>
+    </div>
+
+    
+
+    <ul x-data="$store.users">
+        <template x-for="u in list">
+            <li x-text="u.name"></li>
+        </template>
+    </ul>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('users', {
+                list: ['Ada', 'John'],
+            })
+
+            searchUsers("")
+        })
+        
+
+        function searchUsers(query) {
+            const url = "/search-users?q="+query;
+
+            axios.get(url).then(res => {
+                Alpine.store("users").list = res.data.result
+            })
+        }
+    </script>
+</body>
+</html>
