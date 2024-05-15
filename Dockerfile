@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-bullseye
 
 RUN apt-get update && apt-get install -y build-essential && apt-get install curl -y
 
